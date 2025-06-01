@@ -20,14 +20,15 @@ checkEnv()
 
 // config schema '.Env'
 const configSchema = zod.object({
-    PORT: zod.string().default('4000')
+    PORT: zod.string().default('4000'),
+    MONGODB_URI: zod.string()
 })
 
 // from schema => object env config => { success: true, data: {  } }
 const configServer = configSchema.safeParse(process.env)
 
 // check config isSuccess
-// faile
+// failed
 if (!configServer.success) {
     console.log(configServer.error.issues)
     throw new Error('Các giá trị khai báo trong file .env không hợp lệ')
