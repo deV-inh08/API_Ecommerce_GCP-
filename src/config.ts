@@ -27,7 +27,7 @@ const configSchema = zod.object({
 const configServer = configSchema.safeParse(process.env)
 
 // check config isSuccess
-// faild
+// faile
 if (!configServer.success) {
     console.log(configServer.error.issues)
     throw new Error('Các giá trị khai báo trong file .env không hợp lệ')
