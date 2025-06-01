@@ -1,5 +1,5 @@
 import app from './src/app'
-import envConfig from './src/config'
+import envConfig from './src/constants/config'
 
 // listen PORT
 const server = app.listen(envConfig.PORT, () => {
