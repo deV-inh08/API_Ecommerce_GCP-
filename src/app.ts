@@ -1,11 +1,11 @@
 import express from 'express'
 import morgan from 'morgan'
 import helmet from 'helmet'
+
 // app
 const app = express()
 
 // init middleware
-
 // morgan => check status
 app.use(morgan('dev'))
 // app.use(morgan('tiny'))
@@ -14,6 +14,7 @@ app.use(morgan('dev'))
 
 // security-policy
 app.use(helmet())
+
 
 // init DB
 

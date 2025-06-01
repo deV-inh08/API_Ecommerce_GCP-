@@ -21,7 +21,8 @@ checkEnv()
 // config schema '.Env'
 const configSchema = zod.object({
     PORT: zod.string().default('4000'),
-    MONGODB_URI: zod.string()
+    MONGODB_URI: zod.string(),
+    dbName: zod.string()
 })
 
 // from schema => object env config => { success: true, data: {  } }
