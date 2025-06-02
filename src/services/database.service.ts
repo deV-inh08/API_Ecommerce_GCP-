@@ -27,3 +27,7 @@ class DatabaseServices {
     }
 }
 
+const dbServices = new DatabaseServices()
+
+export default dbServices
+

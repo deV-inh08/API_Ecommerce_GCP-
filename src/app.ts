@@ -1,6 +1,9 @@
 import express from 'express'
 import morgan from 'morgan'
 import helmet from 'helmet'
+import compression from 'compression'
+import dbServices from './services/database.service'
+
 
 // app
 const app = express()
@@ -15,16 +18,24 @@ app.use(morgan('dev'))
 // security-policy
 app.use(helmet())
 
+// compression
+app.use(compression())
 
-// init DB
+
+// connect DB (initial MongoDb)
+dbServices.connect().then(() => {
+
+})
+
 
 // App can use Json format
 app.use(express.json())
 
 // routes
 app.get('/', (req, res, next) => {
+    const str = 'Hello devInh08'
     res.status(200).json({
-        message: "Hello world"
+        message: "Hello world".repeat(1000000)
     })
 })
 
