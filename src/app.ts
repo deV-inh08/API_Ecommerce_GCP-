@@ -2,7 +2,7 @@ import express from 'express'
 import morgan from 'morgan'
 import helmet from 'helmet'
 import compression from 'compression'
-import dbServices from './services/database.service'
+import dbServices from './db/initMongo.db'
 
 
 // app
@@ -18,13 +18,13 @@ app.use(morgan('dev'))
 // security-policy
 app.use(helmet())
 
-// compression
+// compression => down loading banlance data
 app.use(compression())
 
 
 // connect DB (initial MongoDb)
-dbServices.connect().then(() => {
-
+app.use(async () => {
+    await dbServices
 })
 
 

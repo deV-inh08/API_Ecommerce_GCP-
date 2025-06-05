@@ -22,9 +22,7 @@ class DatabaseServices {
         }
     }
 
-    async indexUsers() {
 
-    }
 }
 
 const dbServices = new DatabaseServices()
