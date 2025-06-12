@@ -18,7 +18,9 @@ checkIsExistEnvFile()
 
 //  config Schema
 const configSchemaEnv = z.object({
-  PORT: z.string().default('3000')
+  PORT: z.string().default('3000'),
+  DB_URI: z.string(),
+  DB_NAME: z.string()
 })
 
 // from schema -> object {isSuccess, data: {} }
