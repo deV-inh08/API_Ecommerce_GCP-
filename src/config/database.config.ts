@@ -1,7 +1,8 @@
-import { MongoClient, Db } from "mongodb";
-import envConfig from "~/config/env.config";
+import { MongoClient, Db } from 'mongodb';
+import envConfig from '~/config/env.config';
 
-class DatabaseManager {
+class DatabaseServices {
+  private static instance: DatabaseServices
   private client: MongoClient | null
   private db: Db | null
   private isConnected: boolean
@@ -11,23 +12,65 @@ class DatabaseManager {
     this.isConnected = false
   }
 
-  async connect() {
-    if (this.isConnected && this.client) {
-      return this.db
-    } else {
-      try {
-        this.client = new MongoClient(envConfig.DB_URI)
-        await this.client.connect()
-        console.log('MongoDb connected is successfully');
-        this.db = this.client.db(envConfig.DB_NAME)
-        this.isConnected = true
-      } catch (error) {
-        // need custom type for Error Message
-        throw new Error(`Database connection failed: ${error}`)
-      }
+  static getInstance(): DatabaseServices {
+    if (!DatabaseServices.instance) {
+      DatabaseServices.instance = new DatabaseServices()
     }
+    return DatabaseServices.instance
+  }
+
+  async connect(): Promise<void> {
+    if (this.isConnected) {
+      console.log('💡 Already connected to MongoDB')
+      return
+    }
+    try {
+      this.client = new MongoClient(envConfig.DB_URI, {
+        maxPoolSize: 10,
+        serverSelectionTimeoutMS: 5000,
+        socketTimeoutMS: 45000,
+        family: 4
+      })
+
+      await this.client.connect()
+      this.db = this.client.db(envConfig.DB_NAME)
+
+      // veryfi connection
+      await this.db.command({
+        ping: 1
+      })
+      console.log('✅ Successfully connected to MongoDB!')
+      this.isConnected = true
+    } catch (error) {
+      console.error('❌ MongoDB connection failed:', error)
+      // disconnect
+      await this.disConnected()
+    }
+  }
+
+  // disconnect
+  async disConnected(): Promise<void> {
+    try {
+      if (this.client) {
+        await this.client.close()
+        this.client = null
+        this.db = null
+        this.isConnected = false
+        console.log('📴 Disconnected from MongoDB')
+      }
+    } catch (error) {
+      console.error('Error disconnecting from MongoDB:', error)
+      throw error
+    }
+  }
+
+  getDb(): Db {
+    if (!this.db) {
+      throw new Error('Database not connected. Call connect() first')
+    }
+    return this.db
   }
 }
 
-const databaseManager = new DatabaseManager().connect()
-export default databaseManager
+const databaseServices = DatabaseServices.getInstance()
+export default databaseServices
